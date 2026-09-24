@@ -52,6 +52,12 @@
     "onLanguage:firestore",
     "onLanguage:firestorerules"
   ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": true
+  },
   "contributes": {
     "languages": [
       {
