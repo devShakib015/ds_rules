@@ -1,0 +1,61 @@
+{
+  "Firestore rules, deny by default": {
+    "prefix": "firestore",
+    "body": [
+      "rules_version = '2';",
+      "",
+      "service cloud.firestore {",
+      "  match /databases/{database}/documents {",
+      "    // Nothing is readable or writable unless a rule below says so.",
+      "    $0",
+      "  }",
+      "}"
+    ],
+    "description": "A Firestore rules file that starts closed."
+  },
+  "Owner-only collection": {
+    "prefix": "owner",
+    "body": [
+      "match /${1:users}/{${2:userId}} {",
+      "  allow read: if request.auth != null && request.auth.uid == ${2:userId};",
+      "  allow create, update: if request.auth != null && request.auth.uid == ${2:userId}",
+      "    && request.resource.data.keys().hasOnly([${3:'name'}]);",
+      "  allow delete: if request.auth != null && request.auth.uid == ${2:userId};",
+      "}"
+    ],
+    "description": "Only the signed-in owner, and only the fields you name."
+  },
+  "Public read, admin write": {
+    "prefix": "public",
+    "body": [
+      "match /${1:content}/{${2:docId}} {",
+      "  allow read: if true;",
+      "  allow write: if isAdmin();",
+      "}"
+    ],
+    "description": "Published content anyone can read."
+  },
+  "Admin by email claim": {
+    "prefix": "isadmin",
+    "body": [
+      "function isAdmin() {",
+      "  return request.auth != null",
+      "    && request.auth.token.email == '${1:you@example.com}'",
+      "    && request.auth.token.email_verified == true;",
+      "}"
+    ],
+    "description": "One admin, identified by a verified email claim."
+  },
+  "Storage upload with limits": {
+    "prefix": "upload",
+    "body": [
+      "match /${1:uploads}/{${2:userId}}/{${3:fileName}} {",
+      "  allow read: if request.auth != null && request.auth.uid == ${2:userId};",
+      "  allow write: if request.auth != null && request.auth.uid == ${2:userId}",
+      "    && request.resource.size < ${4:5} * 1024 * 1024",
+      "    && request.resource.contentType.matches('${5:image/.*}');",
+      "}"
+    ],
+    "description": "The owner only, with a size cap and a content type."
+  }
+}

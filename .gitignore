@@ -1,0 +1,4 @@
+# Build output — regenerate with `npx @vscode/vsce package`
+*.vsix
+node_modules/
+.DS_Store

@@ -1,0 +1,121 @@
+{
+  "name": "ds-rules",
+  "displayName": "Firestore Rules Linter — Security Checks",
+  "description": "Catches the Firestore and Storage rules mistakes that leak data — open writes, test mode left on, anyone-can-edit, unchecked uploads — as you type. Plus highlighting and snippets.",
+  "version": "0.1.0",
+  "publisher": "devShakib",
+  "author": {
+    "name": "devShakib",
+    "url": "https://devshakib.jumyn.com"
+  },
+  "homepage": "https://devshakib.jumyn.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devShakib015/ds_rules.git"
+  },
+  "bugs": {
+    "url": "https://github.com/devShakib015/ds_rules/issues"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Linters",
+    "Programming Languages",
+    "Snippets"
+  ],
+  "keywords": [
+    "firestore",
+    "firebase",
+    "firestore rules",
+    "security rules",
+    "firebase rules",
+    "storage rules",
+    "firebase storage",
+    "cloud firestore",
+    "linter",
+    "lint",
+    "security",
+    "rules",
+    "firebase security",
+    "google cloud"
+  ],
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#0D0D0F",
+    "theme": "dark"
+  },
+  "main": "./extension.js",
+  "activationEvents": [
+    "onLanguage:firestore-rules",
+    "onLanguage:firestore",
+    "onLanguage:firestorerules"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "firestore-rules",
+        "aliases": [
+          "Firebase Security Rules",
+          "firestore-rules"
+        ],
+        "extensions": [
+          ".rules"
+        ],
+        "filenames": [
+          "firestore.rules",
+          "storage.rules"
+        ],
+        "firstLine": "^\\s*(rules_version|service\\s+(cloud\\.firestore|firebase\\.storage))",
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "firestore-rules",
+        "scopeName": "source.firestore-rules",
+        "path": "./syntaxes/firestore-rules.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "firestore-rules",
+        "path": "./snippets/firestore-rules.json"
+      }
+    ],
+    "configuration": {
+      "title": "Firestore Rules Linter",
+      "properties": {
+        "firestoreRulesLinter.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check Firestore and Storage rules files as you type."
+        },
+        "firestoreRulesLinter.disabledChecks": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string",
+            "enum": [
+              "open-write",
+              "open-read-recursive",
+              "public-read",
+              "test-mode",
+              "test-mode-expired",
+              "root-recursive-grant",
+              "signed-in-write",
+              "unvalidated-write",
+              "storage-unchecked-upload",
+              "email-unverified",
+              "too-many-lookups",
+              "rules-version",
+              "syntax"
+            ]
+          },
+          "markdownDescription": "Checks to turn off everywhere. To silence one line instead, put `// rules-lint-ignore` (or `// rules-lint-ignore: <check>`) on the line above it."
+        }
+      }
+    }
+  }
+}

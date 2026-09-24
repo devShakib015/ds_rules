@@ -1,0 +1,258 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Firebase Security Rules",
+  "scopeName": "source.firestore-rules",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#version"
+    },
+    {
+      "include": "#service"
+    },
+    {
+      "include": "#allow"
+    },
+    {
+      "include": "#function-decl"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#path"
+    },
+    {
+      "include": "#wildcard"
+    },
+    {
+      "include": "#interpolation"
+    },
+    {
+      "include": "#expression"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.firestore-rules",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.firestore-rules",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.single.firestore-rules",
+          "begin": "'",
+          "end": "'|$",
+          "patterns": [
+            {
+              "name": "constant.character.escape.firestore-rules",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.double.firestore-rules",
+          "begin": "\"",
+          "end": "\"|$",
+          "patterns": [
+            {
+              "name": "constant.character.escape.firestore-rules",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "version": {
+      "match": "\\b(rules_version)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.other.version.firestore-rules"
+        }
+      }
+    },
+    "service": {
+      "match": "\\b(service)\\s+([\\w.]+)",
+      "captures": {
+        "1": {
+          "name": "keyword.other.service.firestore-rules"
+        },
+        "2": {
+          "name": "entity.name.namespace.firestore-rules"
+        }
+      }
+    },
+    "allow": {
+      "begin": "\\b(allow)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.allow.firestore-rules"
+        }
+      },
+      "end": "(?=[:;])",
+      "patterns": [
+        {
+          "name": "keyword.other.method.firestore-rules",
+          "match": "\\b(read|write|get|list|create|update|delete)\\b"
+        },
+        {
+          "name": "invalid.illegal.method.firestore-rules",
+          "match": "\\b\\w+\\b"
+        },
+        {
+          "name": "punctuation.separator.comma.firestore-rules",
+          "match": ","
+        }
+      ]
+    },
+    "function-decl": {
+      "match": "\\b(function)\\s+(\\w+)",
+      "captures": {
+        "1": {
+          "name": "storage.type.function.firestore-rules"
+        },
+        "2": {
+          "name": "entity.name.function.firestore-rules"
+        }
+      }
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.firestore-rules",
+          "match": "\\b(match|if|return|let)\\b"
+        },
+        {
+          "name": "keyword.operator.word.firestore-rules",
+          "match": "\\b(in|is)\\b"
+        },
+        {
+          "name": "constant.language.firestore-rules",
+          "match": "\\b(true|false|null)\\b"
+        }
+      ]
+    },
+    "wildcard": {
+      "match": "\\{\\s*(\\w+)\\s*(=\\s*\\*\\*)?\\s*\\}",
+      "captures": {
+        "1": {
+          "name": "variable.parameter.wildcard.firestore-rules"
+        },
+        "2": {
+          "name": "keyword.operator.recursive.firestore-rules"
+        }
+      }
+    },
+    "interpolation": {
+      "begin": "\\$\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.interpolation.begin.firestore-rules"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.interpolation.end.firestore-rules"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#expression"
+        }
+      ]
+    },
+    "expression": {
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#strings"
+        },
+        {
+          "include": "#path"
+        },
+        {
+          "name": "constant.numeric.firestore-rules",
+          "match": "\\b\\d+(\\.\\d+)?([eE][+-]?\\d+)?\\b"
+        },
+        {
+          "name": "variable.language.firestore-rules",
+          "match": "\\b(request|resource|database)\\b"
+        },
+        {
+          "name": "support.type.firestore-rules",
+          "match": "(?<=\\bis\\s)\\s*(string|int|float|number|bool|bytes|map|list|timestamp|duration|path|latlng|set)\\b"
+        },
+        {
+          "name": "support.function.builtin.firestore-rules",
+          "match": "\\b(get|exists|getAfter|existsAfter|debug)(?=\\s*\\()"
+        },
+        {
+          "name": "support.class.firestore-rules",
+          "match": "\\b(math|timestamp|duration|hashing|latlng|string)(?=\\s*\\.)"
+        },
+        {
+          "name": "entity.name.function.call.firestore-rules",
+          "match": "\\b\\w+(?=\\s*\\()"
+        },
+        {
+          "name": "keyword.operator.logical.firestore-rules",
+          "match": "&&|\\|\\||!(?!=)"
+        },
+        {
+          "name": "keyword.operator.comparison.firestore-rules",
+          "match": "==|!=|<=|>=|<|>"
+        },
+        {
+          "name": "keyword.operator.arithmetic.firestore-rules",
+          "match": "[+\\-*/%]"
+        },
+        {
+          "name": "keyword.operator.ternary.firestore-rules",
+          "match": "[?:]"
+        },
+        {
+          "include": "#keywords"
+        },
+        {
+          "include": "#wildcard"
+        },
+        {
+          "include": "#interpolation"
+        }
+      ]
+    },
+    "path": {
+      "name": "string.unquoted.path.firestore-rules",
+      "match": "(?<![\\w)\\]])(?:/(?:[A-Za-z_][\\w-]*|\\{\\s*\\w+\\s*(?:=\\s*\\*\\*)?\\s*\\}|\\$\\([^()]*(?:\\([^()]*\\))?[^()]*\\)))+",
+      "captures": {
+        "0": {
+          "patterns": [
+            {
+              "include": "#wildcard"
+            },
+            {
+              "include": "#interpolation"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
