@@ -124,6 +124,12 @@ on the function that does the check, not on every rule that calls it.
 calls in one condition, counting the functions it calls. A single-document
 request allows ten; past that it is denied.
 
+Firestore caches a document for the rest of the request, so the same path is
+counted once, however many helpers read it and whether through `get()` or
+`exists()`. `getAfter()` reads the document as the write would leave it, which is
+a separate read. A path built from a function parameter is counted on every
+call: `isMember(a)` and `isMember(b)` are two documents.
+
 ### rules-version
 
 **Warning.** No `rules_version = '2';`. Version 1 matches recursive wildcards

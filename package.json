@@ -2,7 +2,7 @@
   "name": "ds-rules",
   "displayName": "Firestore Rules Linter — Security Checks",
   "description": "Catches the Firestore and Storage rules mistakes that leak data — open writes, test mode left on, anyone-can-edit, unchecked uploads — as you type. Plus highlighting and snippets.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "devShakib",
   "author": {
     "name": "devShakib",

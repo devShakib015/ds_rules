@@ -1,3 +1,12 @@
+## 0.1.1
+
+`too-many-lookups` counts documents, not calls. Firestore caches a document for
+the rest of a request and a cached access doesn't count toward the limit, so a
+role lookup in a helper that one condition calls eleven times is one lookup, not
+eleven — it was a false warning. `get()` and `exists()` on one path count once;
+`getAfter()` is a separate read. A path built from a function parameter is still
+counted on every call, since `isMember(a)` and `isMember(b)` are two documents.
+
 ## 0.1.0
 
 First release.

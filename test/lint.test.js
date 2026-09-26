@@ -191,6 +191,40 @@ test('too-many-lookups: ten is the limit, not over it', () => {
   assert.ok(!ids(fs(`match /x/{id} { allow read: if ${calls}; }`)).includes('too-many-lookups'));
 });
 
+// Firestore caches a document for the rest of the request, and a cached access
+// doesn't count toward the limit.
+test('too-many-lookups: the same document read eleven times is one lookup', () => {
+  const me = 'get(/databases/$(database)/documents/users/$(request.auth.uid)).data';
+  const calls = Array.from({ length: 11 }, (_, i) => `${me}.f${i} == true`).join(' && ');
+  assert.ok(!ids(fs(`match /x/{id} { allow read: if ${calls}; }`)).includes('too-many-lookups'));
+});
+
+test('too-many-lookups: one helper called eleven times is one lookup', () => {
+  const calls = Array.from({ length: 11 }, (_, i) => `me().f${i} == true`).join(' && ');
+  const src = fs(`function me() { return get(/databases/$(database)/documents/users/$(request.auth.uid)).data; }
+    match /x/{id} { allow read: if ${calls}; }`);
+  assert.ok(!ids(src).includes('too-many-lookups'));
+});
+
+test('too-many-lookups: get and exists on one path are one lookup, getAfter is another', () => {
+  const calls = Array.from({ length: 6 }, (_, i) => {
+    const p = `/databases/$(database)/documents/c/d${i}`;
+    return `exists(${p}) && get(${p}).data.n == getAfter(${p}).data.n`;
+  }).join(' && ');
+  const [d] = run(fs(`match /x/{id} { allow read: if ${calls}; }`)).filter((x) => x.id === 'too-many-lookups');
+  assert.match(d.message, /^12 document lookups/);
+});
+
+test('too-many-lookups: a path built from a parameter is counted on every call', () => {
+  const calls = Array.from({ length: 11 }, (_, i) => `member('g${i}')`).join(' || ');
+  for (const fn of [
+    'function member(g) { return exists(/databases/$(database)/documents/groups/$(g)/members/$(request.auth.uid)); }',
+    'function member(g) { let p = /databases/$(database)/documents/groups/$(g); return exists(p); }',
+  ]) {
+    assert.ok(ids(fs(`${fn}\n    match /x/{id} { allow read: if ${calls}; }`)).includes('too-many-lookups'), fn);
+  }
+});
+
 // ------------------------------------------------------------- the file
 
 test('rules-version: missing, or set to 1', () => {
